@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bunga Nanda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --maroon-deep: #1c0709;
+    --maroon: #4a0f16;
+    --rose: #8c2a34;
+    --rose-soft: #b9525a;
+    --gold: #cfa15f;
+    --cream: #f3e6de;
+    --cream-dim: #d9c3ba;
+  }
+
+  *{ box-sizing: border-box; margin:0; padding:0; }
+
+  html{ scroll-behavior: smooth; }
+
+  body{
+    background: var(--maroon-deep);
+    color: var(--cream);
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+  }
+
+  /* ambient background */
+  .bg-glow{
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 50% 0%, rgba(140,42,52,0.45), transparent 60%),
+      radial-gradient(ellipse 50% 40% at 20% 100%, rgba(74,15,22,0.55), transparent 70%),
+      var(--maroon-deep);
+    pointer-events:none;
+  }
+
+  .petals{ position: fixed; inset:0; z-index:1; pointer-events:none; opacity:0.5; }
+
+  section{
+    position: relative;
+    z-index: 2;
+    min-height: 100vh;
+    display:flex;
+    flex-direction: column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding: 8vh 8vw;
+  }
+
+  /* ---------- HERO ---------- */
+  #hero{ gap: 1.4rem; }
+
+  .eyebrow-mark{
+    width: 34px; height: 34px;
+    opacity: 0;
+    animation: fadeIn 1.4s ease forwards 0.2s;
+  }
+
+  .name{
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+    font-size: clamp(3rem, 11vw, 6.4rem);
+    line-height: 1;
+    color: var(--cream);
+    letter-spacing: 0.01em;
+    opacity: 0;
+    transform: translateY(18px);
+    animation: riseIn 1.3s cubic-bezier(.22,.9,.32,1) forwards 0.6s;
+  }
+
+  .for-you{
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(1.1rem, 3vw, 1.5rem);
+    color: var(--rose-soft);
+    opacity: 0;
+    animation: fadeIn 1.4s ease forwards 1.5s;
+  }
+
+  .scroll-hint{
+    position: absolute;
+    bottom: 6vh;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    color: var(--cream-dim);
+    opacity: 0;
+    animation: fadeIn 1.4s ease forwards 2.4s, float 3s ease-in-out infinite 2.4s;
+  }
+
+  /* ---------- LINE SECTIONS ---------- */
+  .line{
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+    font-size: clamp(1.7rem, 5.2vw, 2.9rem);
+    line-height: 1.35;
+    max-width: 620px;
+    color: var(--cream);
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  .line em{
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .visible .line{ animation: riseIn 1s cubic-bezier(.22,.9,.32,1) forwards; }
+
+  .divider{
+    width: 46px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--rose-soft), transparent);
+    margin: 2.4rem 0;
+    opacity:0;
+  }
+  .visible .divider{ animation: fadeIn 1s ease forwards 0.3s; }
+
+  .caption{
+    font-size: 0.8rem;
+    letter-spacing: 0.03em;
+    color: var(--cream-dim);
+    margin-top: 1.1rem;
+    opacity: 0;
+  }
+  .visible .caption{ animation: fadeIn 1s ease forwards 0.5s; }
+
+  /* ---------- PHOTO SECTIONS ---------- */
+  .frame{
+    width: min(78vw, 340px);
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border: 1px solid rgba(207,161,95,0.35);
+    box-shadow: 0 30px 60px -20px rgba(0,0,0,0.6);
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  .visible .frame{ animation: settleIn 1.1s cubic-bezier(.22,.9,.32,1) forwards; }
+
+  .frame img{
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display:block;
+  }
+
+  #momen .frame img{
+    transform: rotate(90deg) scale(1.42);
+  }
+
+  /* ---------- FINALE ---------- */
+  #finale{ gap: 0; }
+
+  .finale-text{
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+    font-size: clamp(1.9rem, 5.6vw, 3.2rem);
+    line-height: 1.4;
+    max-width: 640px;
+    color: var(--cream);
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  .visible .finale-text{ animation: riseIn 1.1s cubic-bezier(.22,.9,.32,1) forwards; }
+
+  .signature{
+    margin-top: 2.2rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.2rem;
+    color: var(--rose-soft);
+    opacity: 0;
+  }
+  .visible .signature{ animation: fadeIn 1.2s ease forwards 0.8s; }
+
+  .rose-mark{
+    margin-top: 3rem;
+    width: 28px;
+    opacity: 0;
+  }
+  .visible .rose-mark{ animation: fadeIn 1.2s ease forwards 1.1s; }
+
+  footer{
+    position: relative;
+    z-index: 2;
+    text-align:center;
+    padding: 3rem 0 4rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+    color: rgba(217,195,186,0.35);
+  }
+
+  /* ---------- NOW PLAYING WIDGET ---------- */
+  #player{
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    background: rgba(28,7,9,0.88);
+    border: 1px solid rgba(207,161,95,0.3);
+    backdrop-filter: blur(6px);
+    border-radius: 999px;
+    box-shadow: 0 16px 40px -12px rgba(0,0,0,0.6);
+    padding: 10px;
+    gap: 10px;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(14px) scale(0.96);
+    transition: max-width 0.45s cubic-bezier(.22,.9,.32,1), padding 0.45s ease;
+    max-width: 56px;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  #player.shown{
+    animation: playerIn 0.7s cubic-bezier(.22,.9,.32,1) forwards;
+  }
+  #player.expanded{
+    max-width: 280px;
+    padding: 10px 16px 10px 10px;
+  }
+  @keyframes playerIn{ to{ opacity:1; transform: translateY(0) scale(1); } }
+
+  .eq{
+    width: 36px; height: 36px;
+    min-width: 36px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, var(--rose), var(--maroon));
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap: 3px;
+  }
+  .eq span{
+    display:block;
+    width: 3px;
+    background: var(--gold);
+    border-radius: 2px;
+    height: 6px;
+    animation: bounce 0.9s ease-in-out infinite;
+  }
+  .eq span:nth-child(2){ animation-delay: 0.15s; }
+  .eq span:nth-child(3){ animation-delay: 0.3s; }
+  #player.paused .eq span{ animation-play-state: paused; height: 4px; }
+
+  @keyframes bounce{
+    0%,100%{ height: 5px; }
+    50%{ height: 15px; }
+  }
+
+  .player-info{
+    display:flex;
+    flex-direction: column;
+    line-height: 1.25;
+    opacity: 0;
+    transition: opacity 0.3s ease 0.15s;
+  }
+  #player.expanded .player-info{ opacity: 1; }
+
+  .player-info .now{
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    color: var(--cream-dim);
+  }
+  .player-info .title{
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    color: var(--cream);
+  }
+
+  @keyframes fadeIn{ to{ opacity:1; } }
+  @keyframes riseIn{ to{ opacity:1; transform: translateY(0); } }
+  @keyframes settleIn{ to{ opacity:1; transform: scale(1); } }
+  @keyframes float{
+    0%,100%{ transform: translateY(0); }
+    50%{ transform: translateY(6px); }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+<svg class="petals" width="0" height="0"></svg>
+
+<section id="hero">
+  <svg class="eyebrow-mark" viewBox="0 0 24 24" fill="none">
+    <path d="M12 21s-7.5-4.6-10-9.2C0.3 8.1 2 4 6 4c2.4 0 4.2 1.4 6 3.6C13.8 5.4 15.6 4 18 4c4 0 5.7 4.1 4 7.8-2.5 4.6-10 9.2-10 9.2z" fill="#8c2a34" opacity="0.85"/>
+  </svg>
+  <h1 class="name">Hi, Bunga Nanda.</h1>
+  <p class="for-you">Hope You Already Accept My Flower Ya.</p>
+  <p class="scroll-hint">Scroll Down</p>
+</section>
+
+<section id="line1" class="reveal">
+  <p class="line">Yeah, gua tau lu anaknya gasuka kata - kata. Cukup Scroll aja biar ga gabut</p>
+</section>
+
+<section id="line2" class="reveal">
+  <p class="line">Makasih ya Atas Semua Doa. <br><em> Gue Seneng bisa dititik ini </em><br>Tapi gua galupa elu karna lu banyak bantu gue</p>
+  <p class="caption">bukan pencapaian besar, tapi aku bangga.</p>
+</section>
+
+<section id="momen" class="reveal">
+  <div class="frame">
+    <img src="assets/momen.jpg" alt="momen kita">
+  </div>
+  <p class="caption">First Time Ketemu + Photobooth?</p>
+</section>
+
+<section id="kangen" class="reveal">
+  <div class="frame">
+    <img src="assets/kangen.jpeg" alt="masih suka kangen kaya gini">
+  </div>
+  <p class="caption">Last Time Kita Photobooth WKWK</p>
+</section>
+
+<section id="kangen" class="reveal">
+  <div class="frame">
+    <img src="assets/nangisin.jpg" alt="masih suka kangen kaya gini">
+  </div>
+  <p class="caption">Gua masih nyimpen ss lu nangis</p>
+</section>
+
+<section id="kangen" class="reveal">
+  <div class="frame">
+    <img src="assets/NGANTUK.jpeg" alt="masih suka kangen kaya gini">
+  </div>
+  <p class="caption">KEBIASAAN ORANG LAGI CERITA DITINGGAL TIDUR!</p>
+</section>
+
+<section id="kangen" class="reveal">
+  <div class="frame">
+    <img src="assets/komuk.jpeg" alt="masih suka kangen kaya gini">
+  </div>
+  <p class="caption">INI PAS LU PERTAMA KALI DAPET BUNGA DARI <br> DAN KITA MAKAN SHAWARMA<br></p>
+</section>
+
+<section id="kangen" class="reveal">
+  <div class="frame">
+    <img src="assets/Proses.jpeg" alt="masih suka kangen kaya gini">
+  </div>
+  <p class="caption">Ini Proses Bikin WEBnya<br>Fun Fact Gua Ngerjain ini seminggu<br></p>
+</section>
+
+<section id="finale" class="reveal">
+  <p class="finale-text">i Love You. Always.<br>Sorry About My Mistakes<br></p>
+  <p class="signature"></p>
+  <svg class="rose-mark" viewBox="0 0 24 24" fill="none">
+    <path d="M12 21s-7.5-4.6-10-9.2C0.3 8.1 2 4 6 4c2.4 0 4.2 1.4 6 3.6C13.8 5.4 15.6 4 18 4c4 0 5.7 4.1 4 7.8-2.5 4.6-10 9.2-10 9.2z" fill="#cfa15f" opacity="0.9"/>
+  </svg>
+</section>
+
+<footer>Sebenernya masih banyak moment foto, cuman lu pasti close web wkwk</footer>
+
+<audio id="bgm" src="assets/song.mp3" loop preload="auto"></audio>
+
+<div id="player">
+  <div class="eq"><span></span><span></span><span></span></div>
+  <div class="player-info">
+    <span class="now">now playing</span>
+    <span class="title">It's You — Ali Gatie</span>
+  </div>
+</div>
+
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.classList.add('visible');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.4 });
+  reveals.forEach(el=>io.observe(el));
+
+  // ---------- music ----------
+  const bgm = document.getElementById('bgm');
+  const player = document.getElementById('player');
+  let started = false;
+  let collapseTimer = null;
+
+  function startMusic(){
+    if(started) return;
+    bgm.volume = 0.55;
+    bgm.play().then(()=>{
+      started = true;
+      player.classList.add('shown', 'expanded');
+      document.removeEventListener('click', startMusic);
+      document.removeEventListener('touchstart', startMusic);
+      scheduleCollapse();
+    }).catch(()=>{ /* still blocked, will retry on next real click/tap */ });
+  }
+
+  function scheduleCollapse(){
+    clearTimeout(collapseTimer);
+    collapseTimer = setTimeout(()=> player.classList.remove('expanded'), 3200);
+  }
+
+  document.addEventListener('click', startMusic, { passive:true });
+  document.addEventListener('touchstart', startMusic, { passive:true });
+
+  player.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    if(!started){ startMusic(); return; }
+    if(!player.classList.contains('expanded')){
+      player.classList.add('expanded');
+      scheduleCollapse();
+      return;
+    }
+    if(bgm.paused){
+      bgm.play();
+      player.classList.remove('paused');
+    } else {
+      bgm.pause();
+      player.classList.add('paused');
+    }
+    scheduleCollapse();
+  });
+</script>
+
+</body>
+</html>
